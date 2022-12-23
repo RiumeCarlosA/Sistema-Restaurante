@@ -1,0 +1,37 @@
+
+version: '3'
+
+networks:
+  apo_network:
+    driver: bridge    
+
+services:
+
+#docker-compose -f docker-compose-apo.yml up apo_postgres_local
+  apo_postgres_local:
+    restart: always
+    container_name: postgres-apo-local
+    image: postgres:12.2-alpine
+    ports:
+      - 5234:5234
+    networks:
+      - apo_network
+    environment:
+      - POSTGRES_DB=apo
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123@mudar
+
+  #docker-compose -f docker-compose-apo.yml up apo_pgadmin
+  apo_pgadmin:
+    restart: always
+    image: dpage/pgadmin4
+    container_name: apo-pgadmin
+    ports:
+      - 15234:80
+    networks:
+      - apo_network
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=p0stgr3s
+      - PGADMIN_DEFAULT_EMAIL=postgres@postgres.com
+    depends_on:
+      - apo_postgres_local
